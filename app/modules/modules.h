@@ -181,6 +181,15 @@
 #define ROM_MODULES_DHT
 #endif
 
+#if defined(LUA_USE_MODULES_EASYGPIO)
+#define MODULES_EASYGPIO         "easygpio"
+#define ROM_MODULES_EASYGPIO     \
+    _ROM(MODULES_EASYGPIO, luaopen_easygpio, easygpio_map)
+#else
+#define ROM_MODULES_EASYGPIO
+#endif
+
+
 #define LUA_MODULES_ROM     \
         ROM_MODULES_GPIO    \
         ROM_MODULES_PWM		\
@@ -203,6 +212,7 @@
         ROM_MODULES_CJSON   \
         ROM_MODULES_CRYPTO  \
         ROM_MODULES_RC      \
-        ROM_MODULES_DHT
+        ROM_MODULES_DHT     \
+        ROM_MODULES_EASYGPIO
 
 #endif
