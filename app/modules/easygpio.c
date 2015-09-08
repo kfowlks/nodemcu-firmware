@@ -17,9 +17,10 @@
 #define LOW PLATFORM_GPIO_LOW
 
 // Usage:
-//
-// easygpio.init(5, 6, 0)
-// easygpio.read(3, 1)
+// easygpio.read(PIN_CLK, PIN_OUT, num_bits, extra_ticks, delay_us, initial_val, ready_state)
+// -- read 24 bits, from pin 6, pin 5 is CLOCK, hold it for 1us, initial value
+// -- written to pin 5 is LOW (0), and ready state is when the pin 6 changes to LOW (0)
+// easygpio.read(5, 6, 24, 1, 1, 0, 0)
 
 unsigned int PIN_CLK;
 unsigned int PIN_DATA;
@@ -33,22 +34,18 @@ bool is_ready() {
 	return platform_gpio_read(PIN_DATA) == HIGH;
 }
 
-long read(int pulses, int after_ticks) {
+long read(int pin_clk, int pin_data, int num_bits, int after_ticks,
+		int delay_us, int initial_clk_write, int ready_state) {
 	unsigned long Count;
 	unsigned char i;
 	Count=0;
 
-	if (STATE_INDICATOR == 0) {
-		platform_gpio_write(PIN_CLK, LOW );
-	}
-	else {
-		platform_gpio_write(PIN_CLK, HIGH );
-	}
+	platform_gpio_write(pin_clk, initial_clk_write);
 
-	while (!is_ready());
+	while (platform_gpio_read(pin_data) != ready_state);
 
-	for (i=0;i<pulses*8;i++){
-		platform_gpio_write(PIN_CLK, HIGH );
+	for (i=0;i<num_bits;i++){
+		platform_gpio_write(pin_clk, HIGH );
 		Count=Count<<1;
 
 		//uint32_t t = system_get_time();
@@ -56,24 +53,24 @@ long read(int pulses, int after_ticks) {
 		//{
 		//	os_delay_us(1);
 		//}
-		os_delay_us(1);
+		os_delay_us(delay_us);
 
-		if (platform_gpio_read(PIN_DATA) == HIGH) Count++;
-		platform_gpio_write(PIN_CLK, LOW );
+		if (platform_gpio_read(pin_data) == HIGH) Count++;
+		platform_gpio_write(pin_clk, LOW );
 
 		//t = system_get_time();
 		//while ((system_get_time() - t) < 40)
 		//{
 		//	os_delay_us(1);
 		//}
-		os_delay_us(1);
+		os_delay_us(delay_us);
 	}
 
 	for (i = 1; i <= after_ticks; i++) {
-		platform_gpio_write(PIN_CLK, HIGH);
-		os_delay_us(1);
-		platform_gpio_write(PIN_CLK, LOW);
-		os_delay_us(1);
+		platform_gpio_write(pin_clk, HIGH);
+		os_delay_us(delay_us);
+		platform_gpio_write(pin_clk, LOW);
+		os_delay_us(delay_us);
 	}
 
 	Count=Count^0x800000;
@@ -103,12 +100,29 @@ static int easygpio_info( lua_State* L )
 
 static int easygpio_read( lua_State* L )
 {
-	lua_Integer pulses;
-	pulses = luaL_checkinteger( L, 1 );
-	lua_Integer after_tick;
-	after_tick = luaL_checkinteger( L, 2 );
+	//int pin_clk, int pin_data, int num_bits, int after_ticks,
+	//		int delay_us, int initial_state, int ready_state)
+
+	int pin_clk;
+	int pin_data;
+	int num_bits;
+	int after_ticks;
+	int delay_us;
+	int initial_clk_write;
+	int ready_state;
+
+	pin_clk = (int) luaL_checkinteger( L, 1 );
+	pin_data = (int) luaL_checkinteger( L, 2 );
+	num_bits = (int) luaL_checkinteger( L, 3 );
+	after_ticks = (int)luaL_checkinteger( L, 4 );
+	delay_us = (int) luaL_checkinteger( L, 5 );
+	initial_clk_write = (int) luaL_checkinteger( L, 6 );
+	ready_state = (int) luaL_checkinteger( L, 7 );
+
 	long int result;
-	result = read((int)pulses, (int)after_tick);
+	result = read(pin_clk, pin_data, num_bits, after_ticks,
+				delay_us, initial_clk_write, ready_state);
+
 	lua_pushnumber(L, (lua_Number)result);
 	return 1;
 }
