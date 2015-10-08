@@ -27,7 +27,7 @@ function M.set_gain(b)
     elseif b == 32 then
         GAIN = 3;
     else then
-        throw("Error, unknown gain value: " + b);
+        throw("Error, unknown gain value: " .. b);
     end
 end
 

@@ -39,7 +39,7 @@ SUBDIRS= 					\
 	spiffs 					\
 	cjson 					\
 	crypto 					\
-	dhtlib
+	dhtlib                  
 
 endif # } PDIR
 
@@ -90,8 +90,8 @@ COMPONENTS_eagle.app.v6 = 			\
 	cjson/libcjson.a 			\
 	crypto/libcrypto.a 			\
 	dhtlib/libdhtlib.a 			\
-	modules/libmodules.a
-
+	modules/libmodules.a		
+	
 LINKFLAGS_eagle.app.v6 = 			\
 	-L../lib 				\
 	-Wl,--gc-sections 			\

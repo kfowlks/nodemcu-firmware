@@ -1,5 +1,4 @@
 -- Lua 5.1+ hx711 2015 by Roman Chyla <roman.chyla@gmail.com>
--- licensed under the terms of the LGPL2
 
 local moduleName = ... 
 local M = {}

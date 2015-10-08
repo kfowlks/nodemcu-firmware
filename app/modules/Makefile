@@ -51,6 +51,7 @@ INCLUDES += -I ../cjson
 INCLUDES += -I ../dhtlib
 INCLUDES += -I ../PCD8544
 INCLUDES += -I ../easygpio
+INCLUDES += -I ../iotoolz
 PDIR := ../$(PDIR)
 sinclude $(PDIR)Makefile
 

@@ -77,19 +77,6 @@ long read(int pin_clk, int pin_data, int num_bits, int after_ticks,
 	return(Count);
 }
 
-//initialize GPIO's
-static int easygpio_init( lua_State* L )
-{
-	PIN_CLK = luaL_checkinteger( L, 1 );
-	PIN_DATA = luaL_checkinteger( L, 2 );
-	STATE_INDICATOR = luaL_checkinteger(L, 3);
-
-	platform_gpio_mode(PIN_CLK, OUTPUT, PULLUP);
-	platform_gpio_mode(PIN_DATA, INPUT, PULLUP);
-
-	return 1;
-}
-
 static int easygpio_info( lua_State* L )
 {
 	char buf[255];
@@ -132,7 +119,6 @@ static int easygpio_read( lua_State* L )
 #include "lrodefs.h"
 const LUA_REG_TYPE easygpio_map[] =
 {
-  { LSTRKEY( "init" ), LFUNCVAL( easygpio_init ) },
   { LSTRKEY( "read" ), LFUNCVAL( easygpio_read ) },
   { LSTRKEY( "info" ), LFUNCVAL( easygpio_info ) },
   { LNILKEY, LNILVAL }

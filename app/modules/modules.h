@@ -189,6 +189,13 @@
 #define ROM_MODULES_EASYGPIO
 #endif
 
+#if defined(LUA_USE_MODULES_IOTOOLZ)
+#define MODULES_IOTOOLZ         "iotoolz"
+#define ROM_MODULES_IOTOOLZ     \
+    _ROM(MODULES_IOTOOLZ, luaopen_iotoolz, iotoolz_map)
+#else
+#define ROM_MODULES_IOTOOLZ
+#endif
 
 #define LUA_MODULES_ROM     \
         ROM_MODULES_GPIO    \
@@ -213,6 +220,7 @@
         ROM_MODULES_CRYPTO  \
         ROM_MODULES_RC      \
         ROM_MODULES_DHT     \
-        ROM_MODULES_EASYGPIO
+        ROM_MODULES_EASYGPIO \
+		ROM_MODULES_IOTOOLZ
 
 #endif
